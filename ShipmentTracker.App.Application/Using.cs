@@ -1,0 +1,14 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
+global using FluentValidation;
+global using Microsoft.Extensions.DependencyInjection;
+global using ShipmentTacker.App.Application.DTO;
+global using ShipmentTacker.App.Application.Shipments.ShipmentsCommands;
+global using ShipmentTacker.App.Application.Shipments.ShipmentsQueries;
+global using MediatR;
+global using ShipmentTacker.App.Application.Abstraction;
+global using ShipmentTacker.App.Application.Carriers.CarriersQueries;
+global using ShipmentTracker.App.Domain.Enums;
