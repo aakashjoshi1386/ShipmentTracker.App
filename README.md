@@ -14,7 +14,7 @@ ShipmentTracker.sln │ ├── ShipmentTracker.App.API --> ASP.NET Core Web A
 
 ## ⚙️ Project Creation & Dependencies
 
-### 🧱 Create Blank Solution
+### 🧱 Create Blank Solution using VS 2022
 
 ```bash
 dotnet new sln -n ShipmentTracker
@@ -167,3 +167,9 @@ const api = process.env.NEXT_PUBLIC_API_BASE_URL;
 ✅ Summary
 This setup enables a robust full-stack environment following Clean Architecture for the backend and modern MUI-powered frontend with
 CI/CD and Azure deployment capabilities.
+
+Advance Scopes:
+1. Still we could optimiz and secure it using MSAL or OAuth OpenID layer
+2. Use Azure Serverless Architecture for sending shipment delivery status alerts
+3. Also real time data anaylsis using Azure Service Bus or message brocker to the admin dashboard
+4. Many features could be implemented in this domain.
