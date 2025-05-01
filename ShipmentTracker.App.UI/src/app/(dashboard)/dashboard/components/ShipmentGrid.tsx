@@ -37,8 +37,8 @@ export default function ShipmentGrid() {
   );
   const [refreshGrid, setRefreshGrid] = React.useState(false);
   const [carriers, setCarriers] = React.useState<Carrier[]>([]);
-  const [statusFilter, setStatusFilter] = React.useState(null);
-  const [carrierFilter, setCarrierFilter] = React.useState(null);
+  const [statusFilter, setStatusFilter] = React.useState("");
+  const [carrierFilter, setCarrierFilter] = React.useState("");
 
   React.useEffect(() => {
     api.get("/carriers").then((res) => setCarriers(res.data));
@@ -49,8 +49,8 @@ export default function ShipmentGrid() {
       page,
       pageSize,
     };
-    if (statusFilter) params.statusId = statusFilter;
-    if (carrierFilter) params.carrierId = carrierFilter;
+    if (statusFilter) params.statusId = Number(statusFilter);
+    if (carrierFilter) params.carrierId = Number(carrierFilter);
 
     api
       .get("/shipments", { params })
@@ -110,8 +110,8 @@ export default function ShipmentGrid() {
   const reset = () => {
     setPage(1);
     setPageSize(10);
-    setStatusFilter(null);
-    setCarrierFilter(null);
+    setStatusFilter("");
+    setCarrierFilter("");
   };
 
   const handleRefresh = () => {
@@ -122,8 +122,11 @@ export default function ShipmentGrid() {
   return (
     <>
       <Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
-        <FormControl size="small" sx={{ m: 1, minWidth: { xs: "100%", sm: 120 } }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+          <FormControl
+            size="small"
+            sx={{ m: 1, minWidth: { xs: "100%", sm: 120 } }}
+          >
             <InputLabel>Status</InputLabel>
             <Select
               value={statusFilter}
@@ -141,7 +144,10 @@ export default function ShipmentGrid() {
             </Select>
           </FormControl>
 
-          <FormControl size="small" sx={{ m: 1, minWidth: { xs: "100%", sm: 120 } }}>
+          <FormControl
+            size="small"
+            sx={{ m: 1, minWidth: { xs: "100%", sm: 120 } }}
+          >
             <InputLabel>Carrier</InputLabel>
             <Select
               value={carrierFilter}
@@ -158,7 +164,10 @@ export default function ShipmentGrid() {
               ))}
             </Select>
           </FormControl>
-          <FormControl size="small" sx={{ m: 1, minWidth: { xs: "100%", sm: 120 } }}>
+          <FormControl
+            size="small"
+            sx={{ m: 1, minWidth: { xs: "100%", sm: 120 } }}
+          >
             <Button
               variant="contained"
               endIcon={<RefreshIcon />}
@@ -168,7 +177,14 @@ export default function ShipmentGrid() {
             </Button>
           </FormControl>
         </Box>
-        <Box sx={{ height: "auto", width: "100%", overflowX: "auto", overflowY: "hidden" }}>
+        <Box
+          sx={{
+            height: "auto",
+            width: "100%",
+            overflowX: "auto",
+            overflowY: "hidden",
+          }}
+        >
           <DataGrid
             rows={shipments}
             columns={columns}
