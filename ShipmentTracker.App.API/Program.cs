@@ -1,4 +1,6 @@
 
+using ShipmentTracker.App.API.Infrastructure.Exceptions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,7 +28,7 @@ builder.Services.AddHttpContextAccessor();
 // Add Custom CORS Policies
 builder.Services.AddCustomCors(builder.Configuration).GetAwaiter();
 // Add Custom Exception Handler
-//builder.Services.AddExceptionHandler<GlobalExceptionHandler>(); // TODO: Implement Custom Exception Handler
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 // Add API Rate Limiting
 builder.Services.AddMemoryCache();

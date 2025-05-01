@@ -34,9 +34,10 @@ public class ShipmentService(ShipmentTrackerAppDBContext context) : IShipmentSer
                 x.EstimatedDeliveryDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture),
                 x.Status
             ))
+            .OrderByDescending(x => x.Id)
             .ToListAsync();
 
-        return new PaginatedResponse<ShipmentDTO>(shipments.OrderByDescending(x=>x.Id),totalCount);
+        return new PaginatedResponse<ShipmentDTO>(shipments,totalCount);
     }
     public async Task<bool> AddShipment(AddShipmentCommand add)
     {
