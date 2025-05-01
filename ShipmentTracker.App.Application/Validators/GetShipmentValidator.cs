@@ -3,19 +3,19 @@ public sealed class GetShipmentValidator : AbstractValidator<GetShipmentsQuery>
 {
     public GetShipmentValidator()
     {
-        RuleFor(x => x.PageNumber)
+        RuleFor(x => x.page)
              .GreaterThan(0)
              .WithMessage("Page number must be greater than 0.");
 
-        RuleFor(x => x.PageSize)
+        RuleFor(x => x.pageSize)
             .GreaterThan(0)
             .WithMessage("Page size must be greater than 0.");
 
-        RuleFor(x => x.Status)
-            .Must(status => string.IsNullOrWhiteSpace(status) || Enum.GetNames(typeof(Status)).Any(e => e.Equals(status, StringComparison.OrdinalIgnoreCase)))
-            .WithMessage("Invalid shipment status. Valid values are: Processing, Shipped, InTransit, OutForDelivery, Delivered, PickedUp.");
+        RuleFor(x => x.statusId)
+            .Must(id => !id.HasValue || id.Value > 0)
+            .WithMessage("Status must be greater than 0.");
 
-        RuleFor(x => x.CarrierId)
+        RuleFor(x => x.carrierId)
             .Must(id => !id.HasValue || id.Value > 0)
             .WithMessage("CarrierId must be greater than 0.");
     }
@@ -38,12 +38,15 @@ public sealed class AddShipmentValidator : AbstractValidator<AddShipmentCommand>
             .WithMessage("CarrierId must be greater than 0.");
 
         RuleFor(x => x.ShipmentDate)
-            .Must(date => date > DateTime.MinValue)
+            .GreaterThan(DateTime.MinValue)
             .WithMessage("Shipment date is required.");
 
         RuleFor(x => x.EstimatedDeliveryDate)
-            .GreaterThan(x => x.ShipmentDate)
-            .WithMessage("Estimated delivery date must be greater than Shipment date.");
+            .GreaterThan(DateTime.MinValue)
+            .WithMessage("Estimated delivery date is required.")
+            .GreaterThanOrEqualTo(x => x.ShipmentDate)
+            .WithMessage("Estimated delivery date must be on or after the shipment date.");
+
     }
 }
 
@@ -57,10 +60,10 @@ public sealed class UpdateShipmentValidator : AbstractValidator<UpdateShipmentSt
             .Must(x => x > 0)
             .WithMessage("ShipmentId must be greater than 0.");
 
-        RuleFor(x => x.Status)
+        RuleFor(x => x.StatusId)
             .NotEmpty()
             .WithMessage("Status is required.")
-            .Must(status => string.IsNullOrWhiteSpace(status) || Enum.GetNames(typeof(Status)).Any(e => e.Equals(status, StringComparison.OrdinalIgnoreCase)))
-            .WithMessage("Invalid shipment status. Valid values are: Processing, Shipped, InTransit, OutForDelivery, Delivered, PickedUp.");
+            .Must(x =>x > 0)
+            .WithMessage("Status must be greater than 0.");
     }
 }

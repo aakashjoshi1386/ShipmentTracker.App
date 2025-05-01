@@ -12,3 +12,4 @@ global using MediatR;
 global using ShipmentTacker.App.Application.Abstraction;
 global using ShipmentTacker.App.Application.Carriers.CarriersQueries;
 global using ShipmentTracker.App.Domain.Enums;
+global using ShipmentTracker.App.Application.DTO;

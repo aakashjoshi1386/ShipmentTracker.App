@@ -7,7 +7,7 @@ public sealed class Shipment
     public int CarrierId { get; set; }
     public DateTime ShipmentDate { get; set; }
     public DateTime EstimatedDeliveryDate { get; set; }
-    public Status Status { get; set; }
+    public int Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime ModifiedAt { get; set; } = DateTime.UtcNow;
 }

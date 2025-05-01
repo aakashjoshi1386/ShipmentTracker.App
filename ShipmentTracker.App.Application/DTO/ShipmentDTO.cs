@@ -4,7 +4,7 @@ public sealed record ShipmentDTO(
     string Origin,
     string Destination,
     string Carrier,
-    DateTime ShipmentDate,
-    DateTime EstimatedDeliveryDate,
-    string Status
+    string ShipmentDate,
+    string EstimatedDeliveryDate,
+    int StatusId
     );

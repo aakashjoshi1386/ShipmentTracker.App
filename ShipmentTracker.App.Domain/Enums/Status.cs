@@ -6,5 +6,6 @@ public enum Status
     InTransit,
     OutForDelivery,
     Delivered,
-    PickedUp
+    PickedUp,
+    Cancelled
 }

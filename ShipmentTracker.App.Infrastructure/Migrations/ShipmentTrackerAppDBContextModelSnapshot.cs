@@ -146,6 +146,21 @@ namespace ShipmentTracker.App.Infrastructure.Migrations
                     b.ToTable("Shipments");
                 });
 
+            modelBuilder.Entity("ShipmentTracker.App.Domain.Entities.ShipmentStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShipmentStatuses");
+                });
+
             modelBuilder.Entity("ShipmentTracker.App.Domain.Entities.ExceptionLog", b =>
                 {
                     b.HasOne("ShipmentTracker.App.Domain.Entities.InnerException", "InnerException")

@@ -17,5 +17,20 @@ public static class DbSeeder
 
             context.SaveChanges();
         }
+        
+        if (!context.ShipmentStatuses.Any()) // seeding Shipment Status Master
+        {
+            context.ShipmentStatuses.AddRange(
+                new ShipmentStatus { Name = "Processing" },
+                new ShipmentStatus { Name = "Shipped" },
+                new ShipmentStatus { Name = "In Transit" },
+                new ShipmentStatus { Name = "Out For Delivery" },
+                new ShipmentStatus { Name = "Delivered" },
+                new ShipmentStatus { Name = "Picked Up" },
+                new ShipmentStatus { Name = "Cancelled" }
+            );
+
+            context.SaveChanges();
+        }
     }
 }
