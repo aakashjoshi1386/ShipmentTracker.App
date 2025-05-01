@@ -2,41 +2,41 @@
 public class ShipmentService(ShipmentTrackerAppDBContext context) : IShipmentService
 {
     private readonly ShipmentTrackerAppDBContext _context = context;
-    public async Task<IEnumerable<ShipmentDTO>> GetShipments(GetShipmentsQuery query)
+    public async Task<PaginatedResponse<ShipmentDTO>> GetShipments(GetShipmentsQuery query)
     {
         var shipmentQuery = _context.Shipments.AsQueryable();
 
-        if (!string.IsNullOrEmpty(query.Status) &&
-            Enum.TryParse<Status>(query.Status, true, out var parsedStatus))
+        if (query.statusId.HasValue)
         {
-            shipmentQuery = shipmentQuery.Where(x => x.Status == parsedStatus);
+            shipmentQuery = shipmentQuery.Where(x => x.Status == query.statusId.Value);
         }
 
-        if (query.CarrierId.HasValue)
+        if (query.carrierId.HasValue)
         {
-            shipmentQuery = shipmentQuery.Where(x => x.CarrierId == query.CarrierId.Value);
+            shipmentQuery = shipmentQuery.Where(x => x.CarrierId == query.carrierId.Value);
         }
 
-        shipmentQuery = shipmentQuery.Skip((query.PageNumber - 1) * query.PageSize)
-                                     .Take(query.PageSize);
+        var totalCount = await shipmentQuery.CountAsync();
 
         var shipments = await shipmentQuery
-                                .Select(x => new ShipmentDTO
-                                            (
-                                                x.Id,
-                                                x.Origin,
-                                                x.Destination,
-                                                _context.Carriers
-                                                        .Where(c => c.Id == x.CarrierId)
-                                                        .Select(c => c.Name)
-                                                        .FirstOrDefault() ?? string.Empty,
-                                                x.ShipmentDate,
-                                                x.EstimatedDeliveryDate,
-                                                x.Status.ToString()
-                                            ))
-                                .ToListAsync();
+            .Skip((query.page - 1) * query.pageSize)
+            .Take(query.pageSize)
+            .Select(x => new ShipmentDTO
+            (
+                x.Id,
+                x.Origin,
+                x.Destination,
+                _context.Carriers
+                        .Where(c => c.Id == x.CarrierId)
+                        .Select(c => c.Name)
+                        .FirstOrDefault() ?? string.Empty,
+                x.ShipmentDate.ToString("MM-dd-yyyy",CultureInfo.InvariantCulture),
+                x.EstimatedDeliveryDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture),
+                x.Status
+            ))
+            .ToListAsync();
 
-        return shipments;
+        return new PaginatedResponse<ShipmentDTO>(shipments.OrderByDescending(x=>x.Id),totalCount);
     }
     public async Task<bool> AddShipment(AddShipmentCommand add)
     {
@@ -47,7 +47,7 @@ public class ShipmentService(ShipmentTrackerAppDBContext context) : IShipmentSer
             CarrierId = add.CarrierId,
             ShipmentDate = add.ShipmentDate,
             EstimatedDeliveryDate = add.EstimatedDeliveryDate,
-            Status = Status.Processing,
+            Status = 1, // default status: Processing
             CreatedAt = DateTime.UtcNow,
         };
         await _context.Shipments.AddAsync(shipment);
@@ -61,16 +61,7 @@ public class ShipmentService(ShipmentTrackerAppDBContext context) : IShipmentSer
         if (shipment is null)
             return false;
 
-        shipment.Status = update.Status switch
-        {
-            "Processing" => Status.Processing,
-            "Shipped" => Status.Shipped,
-            "InTransit" => Status.InTransit,
-            "OutForDelivery" => Status.OutForDelivery,
-            "Delivered" => Status.Delivered,
-            "PickedUp" => Status.PickedUp,
-            _ => shipment.Status
-        };
+        shipment.Status = update.StatusId;
         shipment.ModifiedAt = DateTime.UtcNow;
 
         _context.Entry(shipment).State = EntityState.Modified;

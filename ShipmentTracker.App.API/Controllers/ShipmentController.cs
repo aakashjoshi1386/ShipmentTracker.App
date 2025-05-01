@@ -8,7 +8,7 @@ public class ShipmentController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetShipments([FromQuery] GetShipmentsQuery query)
     {
         var shipments = await mediator.Send(query);
-        return shipments.Any() ? Ok(shipments) : NotFound(shipments);
+        return shipments.Items.Any() ? Ok(shipments) : NotFound(shipments);
     }
 
     [HttpPost]

@@ -48,7 +48,6 @@ builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
 });
-//builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace ShipmentTracker.App.API.Controllers;
+﻿namespace ShipmentTracker.App.API.Controllers;
 
 [Route("api/carriers")]
 [ApiController]
