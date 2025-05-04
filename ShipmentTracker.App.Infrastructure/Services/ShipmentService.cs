@@ -16,26 +16,27 @@ public class ShipmentService(ShipmentTrackerAppDBContext context) : IShipmentSer
             shipmentQuery = shipmentQuery.Where(x => x.CarrierId == query.carrierId.Value);
         }
 
-        var totalCount = await shipmentQuery.CountAsync();
+        var totalCount = await shipmentQuery.AsNoTracking().CountAsync();
 
         var shipments = await shipmentQuery
-            .Skip((query.page - 1) * query.pageSize)
-            .Take(query.pageSize)
-            .Select(x => new ShipmentDTO
-            (
-                x.Id,
-                x.Origin,
-                x.Destination,
-                _context.Carriers
-                        .Where(c => c.Id == x.CarrierId)
-                        .Select(c => c.Name)
-                        .FirstOrDefault() ?? string.Empty,
-                x.ShipmentDate.ToString("MM-dd-yyyy",CultureInfo.InvariantCulture),
-                x.EstimatedDeliveryDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture),
-                x.Status
-            ))
-            .OrderByDescending(x => x.Id)
-            .ToListAsync();
+                                .AsNoTracking()
+                                .OrderByDescending(x => x.Id)
+                                .Skip((query.page - 1) * query.pageSize)
+                                .Take(query.pageSize)
+                                .Select(x => new ShipmentDTO
+                                (
+                                    x.Id,
+                                    x.Origin,
+                                    x.Destination,
+                                    _context.Carriers
+                                            .Where(c => c.Id == x.CarrierId)
+                                            .Select(c => c.Name)
+                                            .FirstOrDefault() ?? string.Empty,
+                                    x.ShipmentDate.ToString("MM-dd-yyyy",CultureInfo.InvariantCulture),
+                                    x.EstimatedDeliveryDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture),
+                                    x.Status
+                                ))
+                                .ToListAsync();
 
         return new PaginatedResponse<ShipmentDTO>(shipments,totalCount);
     }
