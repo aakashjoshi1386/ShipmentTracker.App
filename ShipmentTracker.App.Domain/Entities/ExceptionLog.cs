@@ -1,5 +1,4 @@
 ﻿namespace ShipmentTracker.App.Domain.Entities;
-
 public class ExceptionLog
 {
     public int Id { get; set; }

@@ -29,6 +29,6 @@ export interface AddShipmentsRequest {
   origin: string;
   destination: string;
   carrierId: number | null;
-  shipmentDate: string;
-  estimatedDeliveryDate: string;
+  shipmentDate: Date | null;
+  estimatedDeliveryDate: Date | null;
 }

@@ -21,3 +21,4 @@ global using FluentValidation;
 global using ShipmentTacker.App.Application.Validators;
 global using ShipmentTracker.App.Infrastructure.Contexts;
 global using ShipmentTracker.App.Infrastructure.Seeding;
+global using ShipmentTracker.App.Application.Common.Exceptions;

@@ -1,5 +1,5 @@
 "use client";
-import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import {
   Box,
@@ -24,27 +24,27 @@ import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 
 export default function ShipmentGrid() {
-  const [open, setEditShipmentOpen] = React.useState(false);
-  const [id, setId] = React.useState<number>(0);
-  const [status, setStatus] = React.useState(0);
-  const [shipments, setShipments] = React.useState<Shipment[]>([]);
-  const [pageSize, setPageSize] = React.useState(10);
-  const [page, setPage] = React.useState(1);
-  const [totalCount, setTotalCount] = React.useState(0);
-  const shipmentStatus = React.useMemo<ShipmentStatus[]>(
+  const [open, setEditShipmentOpen] = useState(false);
+  const [id, setId] = useState<number>(0);
+  const [status, setStatus] = useState(0);
+  const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const shipmentStatus = useMemo<ShipmentStatus[]>(
     () => getShipmentStatus(),
     []
   );
-  const [refreshGrid, setRefreshGrid] = React.useState(false);
-  const [carriers, setCarriers] = React.useState<Carrier[]>([]);
-  const [statusFilter, setStatusFilter] = React.useState("");
-  const [carrierFilter, setCarrierFilter] = React.useState("");
+  const [refreshGrid, setRefreshGrid] = useState(false);
+  const [carriers, setCarriers] = useState<Carrier[]>([]);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [carrierFilter, setCarrierFilter] = useState("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     api.get("/carriers").then((res) => setCarriers(res.data));
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const params: GetShipmentsRequest = {
       page,
       pageSize,
@@ -79,7 +79,7 @@ export default function ShipmentGrid() {
       headerName: "Carrier",
       flex: 1,
     },
-    { field: "shipmentDate", headerName: "Shipment Date", flex: 1 },
+    { field: "shipmentDate", headerName: "Ship Date", flex: 1 },
     { field: "estimatedDeliveryDate", headerName: "ETA", flex: 1 },
     {
       field: "statusId",
