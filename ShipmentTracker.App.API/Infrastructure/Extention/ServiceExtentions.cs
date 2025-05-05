@@ -12,10 +12,10 @@ public static class ServiceExtentions
     public static async Task<IServiceCollection> AddCustomServices(this IServiceCollection services)
     {
         // Singelton Services
-        //services.AddSingleton<IExceptionLoggerService, ExceptionLoggerService>(); // TODO: Implement Custom Exception Handler
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
         // Scoped Services
+        services.AddScoped<IExceptionLoggerService, ExceptionLoggerService>();
         services.AddScoped<IShipmentService, ShipmentService>();
         services.AddScoped<ICarrierService, CarrierService>();
         return services;

@@ -1,12 +1,10 @@
 ﻿namespace ShipmentTracker.App.API.Infrastructure.Exceptions;
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger,
                                 IHostEnvironment environment,
-                                //IServiceScopeFactory serviceScopeFactory,
-                                IExceptionLoggerService exceptionLoggerService) : IExceptionHandler
+                                IServiceScopeFactory serviceScopeFactory) : IExceptionHandler
 {
     private const bool IsLastStopInPipline = true;
-    //private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
-    private readonly IExceptionLoggerService _exceptionLoggerService = exceptionLoggerService;
+    private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
@@ -37,7 +35,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger,
     }
     private async Task HandleExceptionLogAsync(HttpContext httpContext, Exception exception)
     {
-        await _exceptionLoggerService.ExceptionLoggerAsync(new ExceptionDTO(
+        using var scope = _serviceScopeFactory.CreateScope();
+        var exceptionLoggerService = scope.ServiceProvider.GetRequiredService<IExceptionLoggerService>();
+
+        await exceptionLoggerService.ExceptionLoggerAsync(new ExceptionDTO(
             httpContext.User?.Identity?.Name ?? string.Empty,
             exception.GetType().Name,
             exception.Source ?? string.Empty,
@@ -80,15 +81,5 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger,
         }
 
         return nameof(SeverityLevel.Critical);
-    }
-}
-public class BaseException : Exception
-{
-    public HttpStatusCode StatusCode { get; }
-    public BaseException(string message,
-                         HttpStatusCode httpStatusCode = HttpStatusCode.InternalServerError)
-        : base(message)
-    {
-        StatusCode = httpStatusCode;
     }
 }
